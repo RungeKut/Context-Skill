@@ -37,7 +37,7 @@ Context-Kit/
 ## Установка на новой машине
 
 ```powershell
-git clone <адрес репозитория> Context-Kit
+git clone https://github.com/RungeKut/Context-Kit.git
 cd Context-Kit
 powershell -ExecutionPolicy Bypass -File tools\setup.ps1
 ```
