@@ -26,7 +26,10 @@ Context-Kit/
 ├── tools/
 │   ├── setup.ps1          установка на машине (junction, хук, локальные файлы)
 │   ├── check_docs.py      целостность базы набора и стоп-слова
-│   ├── check_project.py   сверка проекта с правилами набора
+│   ├── check_project.py   сверка проекта с правилами набора (--summary)
+│   ├── register_project.py  итог сверки в обезличенный реестр 50_ПРОЕКТЫ
+│   ├── split_doc.py       механическое деление документов > 6 КБ
+│   ├── make_index.py      пересборка knowledge/INDEX.md
 │   └── check_msg.py       проверка текста коммита (через хук commit-msg)
 └── CHANGELOG.md
 ```

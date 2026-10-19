@@ -9,7 +9,8 @@
   * docs/INDEX.md (таблица «Файл | Когда») и docs/50_status/STATE.md
     («Обновлено:», ≤ 6 КБ);
   * docs/00_rules/ с token-economy, agents, compact;
-  * каждый документ docs/ ≤ 6 КБ, кроме строк INDEX с пометкой «журнал»;
+  * каждый документ docs/ ≤ 6 КБ, кроме строк INDEX с пометкой «журнал» (дописываемый)
+    или «монолит» (на файл ссылаются код, тесты или релизные ссылки; причина — в INDEX);
   * каждый документ есть в INDEX, и наоборот.
 
 Код возврата 1 — есть ОШИБКИ; предупреждения его не меняют.
@@ -96,7 +97,7 @@ def main(project):
         for l in re.findall(r"`([^`]+(?:\.md|/))`|\]\(([^)]+\.md)\)", line):
             path = (l[0] or l[1]).replace("\\", "/")
             linked.add(path)
-            if "журнал" in line.lower():
+            if "журнал" in line.lower() or "монолит" in line.lower():
                 journal.add(path)
     for dirpath, _d, files in os.walk(docs):
         for fn in files:
@@ -107,13 +108,19 @@ def main(project):
             size = os.path.getsize(full)
             in_journal = r in journal or any(j.endswith("/") and r.startswith(j) for j in journal)
             if size > DOC_LIMIT and not in_journal:
-                warns.append("docs/%s: %d Б > %d — разделить или пометить «журнал» в INDEX (10-04)" % (r, size, DOC_LIMIT))
+                warns.append("docs/%s: %d Б > %d — разделить (tools/split_doc.py) или пометить «журнал»/«монолит» в INDEX (10-03)" % (r, size, DOC_LIMIT))
             if r not in linked and not any(l.endswith(r) or (l.endswith("/") and r.startswith(l)) for l in linked):
                 warns.append("docs/%s: нет в INDEX.md" % r)
     return report(project, errors, warns, info)
 
 
+SUMMARY = False
+
+
 def report(project, errors, warns, info):
+    if SUMMARY:
+        print("%d ошибок, %d предупреждений, в норме %d" % (len(errors), len(warns), len(info)))
+        return 1 if errors else 0
     print("Проект: %s\n" % project)
     for title, items in (("ОШИБКИ", errors), ("ПРЕДУПРЕЖДЕНИЯ", warns), ("В НОРМЕ", info)):
         print("%s (%d)" % (title, len(items)))
@@ -125,7 +132,9 @@ def report(project, errors, warns, info):
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-    if len(sys.argv) != 2:
+    args = [a for a in sys.argv[1:] if a != "--summary"]
+    SUMMARY = "--summary" in sys.argv[1:]
+    if len(args) != 1:
         print(__doc__)
         sys.exit(2)
-    sys.exit(main(sys.argv[1]))
+    sys.exit(main(args[0]))
