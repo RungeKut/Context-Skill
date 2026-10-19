@@ -61,8 +61,6 @@ def size(s):
 def pieces(text, limit):
     """Список кусков ≤ limit (насколько позволяют границы), склейка = text."""
     result = []
-    for level_pattern in (r"## ", r"### ", None):
-        pass
     top = blocks(text, r"## ")
     for b in top:
         if size(b) <= limit:
@@ -75,13 +73,27 @@ def pieces(text, limit):
                 continue
             acc = ""
             for para in paragraphs(s):
-                if acc and size(acc) + size(para) > limit:
-                    result.append(acc)
-                    acc = ""
-                acc += para
+                for chunk in (lines_of(para, limit) if size(para) > limit else [para]):
+                    if acc and size(acc) + size(chunk) > limit:
+                        result.append(acc)
+                        acc = ""
+                    acc += chunk
             if acc:
                 result.append(acc)
     return result
+
+
+def lines_of(text, limit):
+    """Абзац больше лимита (список, таблица): режем по строкам, лучше перед пунктом списка."""
+    out, cur = [], ""
+    for line in text.splitlines(keepends=True):
+        if cur and size(cur) + size(line) > limit:
+            out.append(cur)
+            cur = ""
+        cur += line
+    if cur:
+        out.append(cur)
+    return out
 
 
 def merge(parts, limit):
