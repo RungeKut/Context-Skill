@@ -43,7 +43,8 @@ def main():
         ok.append(bool(cond))
 
     rc, out = run(os.path.join(ROOT, "tools", "check_docs.py"))
-    check("check_docs: база целостна", "Расхождений нет" in out)
+    check("check_docs: база и история целостны",
+          rc == 0 and "Расхождений нет" in out)
 
     sys.path.insert(0, os.path.join(ROOT, "tools"))
     import kit_local
