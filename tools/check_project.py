@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сверка проекта с правилами Context-Kit.
+"""Сверка проекта с правилами Context-Skill.
 
     python tools/check_project.py "D:\\путь\\к\\проекту"
 
@@ -58,7 +58,7 @@ def main(project):
 
     docs = os.path.join(project, "docs")
     if not os.path.isdir(docs):
-        errors.append("нет каталога docs/ — документация вне структуры Context-Kit")
+        errors.append("нет каталога docs/ — документация вне структуры Context-Skill")
         return report(project, errors, warns, info)
 
     # --- INDEX и STATE ---

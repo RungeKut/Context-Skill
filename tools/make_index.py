@@ -45,7 +45,7 @@ def main():
             fm = dict(re.findall(r"^(\w+):\s*(.*)$", t.split("\n---")[0], re.M))
             rel = os.path.relpath(os.path.join(dp, fn), K).replace("\\", "/")
             rows.append((fm["id"], rel, fm["title"].strip('"'), fm.get("status", "")))
-    out = ["# INDEX базы знаний Context-Kit", "",
+    out = ["# INDEX базы знаний Context-Skill", "",
            "Открывай запись, только если задача попала в колонку «Когда». "
            "Закон базы — [00_ПРАВИЛА.md](00_ПРАВИЛА.md).", ""]
     for k, name in SECTIONS:

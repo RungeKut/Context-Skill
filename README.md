@@ -1,9 +1,10 @@
-# Context-Kit
+# Context-Skill
 
 Правила ведения проектов с ИИ-агентами и база проверенного опыта; агрегатор
-практик из рабочих проектов. Устроен по образцу MCU-Kit: `skill/` — точка входа
-для агента, `knowledge/` — база с законом `00_ПРАВИЛА.md`, `tools/` — установка и
-проверки, `CHANGELOG.md` — журнал изменений.
+практик из рабочих проектов. Репозиторий — сам скилл: `SKILL.md` в корне,
+`knowledge/` — база с законом `00_ПРАВИЛА.md`, `tools/` — сверка проектов и
+проверки, `CHANGELOG.md` — журнал изменений. Общие правила наборов,
+проверки и хук — соседний скилл skill-skill.
 
 Три связанные системы (подробно — `knowledge/`):
 
@@ -16,39 +17,34 @@
    ранний compact, комментарии в коде запрещены по умолчанию.
 
 ```
-Context-Kit/
-├── skill/SKILL.md          точка входа для ИИ (подключён как скилл /context)
-├── knowledge/              база знаний
-│   ├── 00_ПРАВИЛА.md      правила ведения базы и агрегации
-│   ├── INDEX.md           карта базы, поиск по симптому
+context/
+├── SKILL.md               точка входа для ИИ (скилл context)
+├── knowledge/             база знаний
+│   ├── 00_ПРАВИЛА.md      особенности базы и агрегация (общее — skill-skill)
+│   ├── INDEX.md           карта базы, поиск по симптому (собирает make_index.py)
 │   ├── 10_ДОКУМЕНТЫ/  20_ПРИЁМЫ/  30_ГРАБЛИ/  40_СРЕДА/  50_ПРОЕКТЫ/
 ├── templates/             AGENTS.md и docs/ для нового проекта
 ├── tools/
-│   ├── setup.ps1          установка на машине (junction, хук, локальные файлы)
-│   ├── check_docs.py      целостность базы набора и стоп-слова
+│   ├── check_docs.py      обёртка общей проверки skill-skill
+│   ├── kit_local.py       своя проверка: строки when.txt для всех записей
 │   ├── check_project.py   сверка проекта с правилами набора (--summary)
 │   ├── register_project.py  итог сверки в обезличенный реестр 50_ПРОЕКТЫ
 │   ├── split_doc.py       механическое деление документов > 6 КБ
-│   ├── make_index.py      пересборка knowledge/INDEX.md
-│   └── check_msg.py       проверка текста коммита (через хук commit-msg)
+│   ├── make_index.py      пересборка knowledge/INDEX.md (when.txt, symptoms.md)
+├── tests/test_tools.py
 └── CHANGELOG.md
 ```
 
-## Установка на новой машине
+## Установка
 
-```powershell
-git clone https://github.com/RungeKut/Context-Kit.git
-cd Context-Kit
-powershell -ExecutionPolicy Bypass -File tools\setup.ps1
+```bash
+git clone https://github.com/RungeKut/Context-Skill.git "<папка скиллов агента>/context"
 ```
 
-Либо двойной щелчок по `Install-skill.bat`. Setup создаёт junction (не симлинки:
-без прав администратора на Windows работают junction) `~\.claude\skills\context` и
-`~\.kimi-code\skills\context` → `<корень>\skill`, задаёт `CONTEXTKIT_HOME`,
-включает хук `commit-msg`, заводит локальные `tools\stoplist.txt` и `local\`.
-После установки один раз перезапустить Claude Code / Kimi Code; дальше
-обновления набора (`git pull`) перезапуска не требуют, кроме правки
-frontmatter `SKILL.md`.
+Рядом нужен скилл skill-skill (общие правила, проверки, хук). Настройка
+клона — skill-skill, `knowledge/40_СРЕДА/40-01`; своё (каталог `local/`,
+стоп-лист набора) — `knowledge/40_СРЕДА/40-01` здесь. Обновление —
+`git pull`, без перезапуска агента.
 
 ## Сверка проекта
 
@@ -70,8 +66,8 @@ python tools/check_project.py "<папка проекта>"
 ## Проверки
 
 ```
-python tools/check_docs.py      целостность базы, frontmatter скилла, стоп-слова
-python tools/check_project.py   сверка проекта
+python tools/check_docs.py      база, SKILL.md, стоп-слова, git (общая, skill-skill)
+python tests/test_tools.py      инструменты набора
 ```
 
 Лицензия — MIT ([LICENSE](LICENSE)).

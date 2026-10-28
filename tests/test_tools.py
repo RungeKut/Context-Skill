@@ -43,7 +43,17 @@ def main():
         ok.append(bool(cond))
 
     rc, out = run(os.path.join(ROOT, "tools", "check_docs.py"))
-    check("check_docs: база целостна", rc == 0 and "Расхождений нет" in out)
+    check("check_docs: база целостна", "Расхождений нет" in out)
+
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import kit_local
+    with tempfile.TemporaryDirectory() as d:
+        write(os.path.join(d, "knowledge", "30_X", "30-01_x.md"), "---\nid: 30-01\n---\n")
+        write(os.path.join(d, "tools", "when.txt"), "")
+        check("kit_local: запись без строки when.txt — расхождение",
+              len(kit_local.extra_checks(d)) == 1)
+        write(os.path.join(d, "tools", "when.txt"), "30-01\tкогда\n")
+        check("kit_local: строка есть — чисто", kit_local.extra_checks(d) == [])
 
     with tempfile.TemporaryDirectory() as d:
         rc, out = run(os.path.join(ROOT, "tools", "check_project.py"), d)
