@@ -10,7 +10,7 @@
 * Репозиторий переименован: Context-Kit → Context-Skill
   (`https://github.com/RungeKut/Context-Skill.git`), ветка `master` →
   `main`. Старое имя осталось только в записях ниже.
-* `skill/SKILL.md` → `SKILL.md` в корне, ≤ 4096 байт: таблица ролей,
+* `skill/SKILL.md` → `SKILL.md` в корне, ≤ 2400 знаков (≈ 1024 токена): таблица ролей,
   бриф, протокол compact и прочие подробности — в записях базы (10-03,
   10-04, 20-01, 20-03, 40-03 дополнены тем, чего там не было). Убраны
   `tools/setup.ps1`, `Install-skill.bat`, junction и переменная с путём к
