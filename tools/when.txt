@@ -36,3 +36,4 @@
 30-10	правишь .bat из Git Bash; cmd разбирает .bat иначе
 30-11	mermaid в README на GitLab не рисуется, ошибка «Encountered an error while rendering»
 30-12	таблица markdown на GitLab показалась сплошным текстом
+30-13	нужен SVG из mermaid; mmdc/Edge/jsdom не завелись; рендер через локальный стенд и IAB
